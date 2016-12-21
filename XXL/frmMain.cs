@@ -31,13 +31,13 @@ namespace XXL
         private void button1_Click(object sender, EventArgs e)
         {
             GamePanel.OriginDict.Clear();
-            service = new XXLService(this, 0, 1);
-            service.InitDict();
+            service = new XXLService(this);
+            service.InitSolution();
+            service.InitStepDict();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            service = new XXLService(this, 0, 1);
             Thread t = new Thread(service.DoWork);
             t.Start();
             //XXLService service = new XXLService(this,0,0);
@@ -62,6 +62,22 @@ namespace XXL
             }
 
             j++;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            
+            for (int i = 0; i < 999; i++)
+            {
+                service.DoStep();
+            }
+            Dictionary<int,int> dict =  XXLService.dictStepPower;
+
+            //for (double  i = 0; i <1E+200; i++)
+            //{
+            //    double x = i;
+            //}
+            //MessageBox.Show("over");
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using BIMT.Util;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using XXL.Model;
 
@@ -32,6 +34,11 @@ namespace XXL.Core
             this.n = n;
         }
 
+        public XXLService(IViewCallback view) : base(view)
+        {
+           
+        }
+
         public void InitDict()
         {
             SendMessage("game init ...");
@@ -50,9 +57,11 @@ namespace XXL.Core
             }
         }
 
-        public void DrawGame()
+        public void DrawGame(int SCORE)
         {
-            SendMessage("=======================================");
+                                       //set origin  ({ 0},{ 1}) kind: { 2}
+            SendMessage(String.Format("score       [{0}] in expand", string.Format("{0,-1:D3}", SCORE*SCORE)));
+            sumScore += SCORE * SCORE;
             for (int y = 0; y < 10; y++)
             {
                 string row = string.Empty;
@@ -91,10 +100,10 @@ namespace XXL.Core
             //{
             //    for (int j = 0; j < 3; j++)
             //    {
-                    InitDict();
-                    sumScore = 0;
-                    StartGame(3, 3);
-                    SendMessage(string.Format("-----------------------------------------------------起始点({1}，{2}) 总分：{0}", sumScore,0,0));
+
+           
+            StartGame();
+            //StartGame(3, 3);
             //    }
             //}
             //result.Sort();
@@ -144,50 +153,172 @@ namespace XXL.Core
 
         //}
 
+
+
+        //public void StartGame(int m, int n)
+        //{
+        //    if (IsCleanPanel())
+        //    {
+        //        //for (int y = n; y < 10; y++)
+        //        //{
+        //        //    for (int x = m; x < 10; x++)
+        //        //    {
+        //        //        SendMessage("重新洗盘>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        //        //        InitDict();
+        //        //        m++;
+        //        //StartGame(m, n);
+        //        //    }
+        //        //    n++;
+        //        //}
+        //        SendMessage(string.Format("GAME OVER>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>{0}",sumScore));
+        //    }
+        //    for (int y =0; y < 10; y++)
+        //    {
+        //        for (int x = 0; x < 10; x++)
+        //        {
+        //            if (GamePanel.OriginDict[x.ToString() + y.ToString()] == null || GamePanel.OriginDict[x.ToString() + y.ToString()].IsNullBlock())
+        //            {
+        //                continue;
+        //            }
+        //            dictGroup.Clear();
+        //            Expand(x, y);
+        //            if (dictGroup.Keys.Count > 1)
+        //            {
+        //                int count = Destory();
+        //                Refresh();
+        //                CalculationScore(count);
+        //                DrawGame();
+        //                StartGame(x, y);
+        //            }
+        //            //else
+        //            //{
+        //            //    dictGroup.Clear();
+        //            //    m++;
+        //            //    StartGame(m, n);
+        //            //}
+        //        }
+        //        //n++;
+        //        //m = 0;
+        //        //StartGame(m, n);
+        //    }
+        //}
+        Dictionary<string, Point> dictSolution = new Dictionary<string, Point>();
+        public void InitSolution()
+        {
+            SendMessage("解决方案初始化.............");
+            for (int step = 0; step < 100; step++)
+            {
+                for (int choice = 0; choice < 100; choice++)
+                {
+                    int y = choice / 10;
+                    int x = choice % 10;
+                    dictSolution.Add(string.Format("{0}_{1}", step, choice), new Point(x, y));
+                }
+            }
+        }
+        int choice = 0;
+        public Point GetNextStep(int step)
+        {
+            if (step == 99)
+            {
+                choice = 0;
+            }
+            else
+            {
+                choice++;
+            }
+            return dictSolution[string.Format("{0}_{1}", step, choice)];
+        }
+
         public void StartGame(int m, int n)
         {
+            for (int step = 0; step < 100; step++)
+            {
+                Point point = GetNextStep(step);
+                Expand(point.X  , point.Y);
+            }
             if (IsCleanPanel())
             {
-                InitDict();
-                for (int y = n; y < 10; y++)
-                {
-                    for (int x = m; x < 10; x++)
-                    {
-                        m++;
-                        StartGame(x, y);
-                    }
-                    n++;
-                }
+                SendMessage(string.Format("GAME OVER>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>{0}", sumScore));
             }
-            for (int y =0; y < 10; y++)
+        }
+
+        public void StartGame()
+        {
+            if (dictStepPower[99] == 99)
+            {//全部路径遍历完成；
+                return;
+            }
+            sumScore = 0;
+            InitDict();
+            for (int step = 0; step < 100; step++)
             {
-                for (int x = 0; x < 10; x++)
+                int power = dictStepPower[step];
+                int y = power / 10;
+                int x = power % 10;
+                Thread.Sleep(100);
+                DoStep();
+                if (!HasNeighbor(x, y))
                 {
-                    if (GamePanel.OriginDict[x.ToString() + y.ToString()] == null || GamePanel.OriginDict[x.ToString() + y.ToString()].IsNullBlock())
-                    {
-                        continue;
-                    }
-                    dictGroup.Clear();
-                    Expand(x, y);
-                    if (dictGroup.Keys.Count > 1)
-                    {
-                        int count = Destory();
-                        Refresh();
-                        CalculationScore(count);
-                        DrawGame();
-                        StartGame(x, y);
-                    }
-                    //else
-                    //{
-                    //    dictGroup.Clear();
-                    //    m++;
-                    //    StartGame(m, n);
-                    //}
+                    SendMessage(string.Format("GAME ABORT--------step:{0} point:({1},{2})", step + 1, x, y));
+                    JumpStep(99 - step);
+                    break;
                 }
-                //n++;
-                //m = 0;
-                //StartGame(m, n);
+                SendMessage(string.Format("------------------step:{0} point:({1},{2})", step + 1, x, y));
+                Expand(x, y);
+                int SCORE = Destory();
+                Refresh();
+                DrawGame(SCORE);
+               
+                dictGroup.Clear();
             }
+            SendMessage(string.Format("GAME OVER>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>{0}", sumScore));
+            Thread.Sleep(900);
+            StartGame();
+        }
+
+        public static Dictionary<int, int> dictStepPower = new Dictionary<int, int>();
+        public void InitStepDict()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                dictStepPower.Add(i, 0);
+            }
+
+        }
+        public static bool once = true;
+        public void DoStep()
+        {
+            once = true;
+            DoStep(0);
+        }
+
+        public void JumpStep(int count)
+        {
+            for (int i = 0; i < count-1; i++)
+            {
+                once = true;
+                DoStep(0);
+            }
+        }
+
+        public void DoStep(int i)
+        {
+            if (i == 100)
+            {
+                return;
+            }
+            if (once)
+            {
+                dictStepPower[i] = ++dictStepPower[i];
+            }
+            once = false;
+            if (dictStepPower[i] == 100)
+            {
+                dictStepPower[i] = 0;
+                dictStepPower[i + 1] = ++dictStepPower[i + 1];
+            }
+            DoStep(++i);
         }
 
         public bool IsCleanPanel()
