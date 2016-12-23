@@ -50,3 +50,4 @@ XXL/bin/Debug/XXL.exe
 XXL/bin/Debug/XXL.exe
 .vs/XXL/v14/.suo
 ConsoleView/obj/Debug/build.force
+*.suo
