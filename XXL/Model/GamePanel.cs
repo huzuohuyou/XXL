@@ -42,6 +42,11 @@ namespace XXL.Model
 
         public Block GetBlock(string key)
         {
+            return GetBlock(OriginDict,key) ;
+        }
+
+        public Block GetBlock( Dictionary<string, Block> OriginDict,string key)
+        {
             if (OriginDict.Keys.Contains(key))
             {
                 return OriginDict[key];
@@ -50,6 +55,11 @@ namespace XXL.Model
         }
 
         public bool IsClearColumn(int x)
+        {
+            return IsClearColumn(OriginDict,x);
+        }
+
+        public bool IsClearColumn(Dictionary<string, Block> OriginDict, int x)
         {
             for (int y = 0; y < 10; y++)
             {

@@ -24,10 +24,19 @@ namespace XXL.Model
 
         public Block GetSameKindBlock(int x, int y)
         {
-            Block block = GamePanel.GetInstance().GetBlock(x.ToString() + y.ToString());
-            if (block != null && block.kind == this.kind)
+            return GetSameKindBlock(GamePanel.OriginDict, x, y);
+        }
+
+        public Block GetSameKindBlock(Dictionary<string, Block> dictOrigin, int x, int y)
+        {
+            string key = x.ToString() + y.ToString();
+            if (dictOrigin.Keys.Contains(key))
             {
-                return block;
+                Block block = dictOrigin[key];// GamePanel.GetInstance().GetBlock(dictOrigin, x.ToString() + y.ToString());
+                if (block != null && block.kind == this.kind && kind != -1)
+                {
+                    return block;
+                }
             }
             return null;
         }
@@ -70,6 +79,34 @@ namespace XXL.Model
             int x = location.X;
             int y = location.Y-1;
             return GetSameKindBlock(x, y);
+        }
+
+        public Block GetSameGroupLeftBlock(Dictionary<string, Block> dictOrigin)
+        {
+            int x = location.X - 1;
+            int y = location.Y;
+            return GetSameKindBlock(dictOrigin,x, y);
+        }
+
+        public Block GetSameGroupRightBlock(Dictionary<string, Block> dictOrigin)
+        {
+            int x = location.X + 1;
+            int y = location.Y;
+            return GetSameKindBlock(dictOrigin, x, y);
+        }
+
+        public Block GetSameGroupUpBlock(Dictionary<string, Block> dictOrigin)
+        {
+            int x = location.X;
+            int y = location.Y + 1;
+            return GetSameKindBlock(dictOrigin, x, y);
+        }
+
+        public Block GetSameGroupDownBlock(Dictionary<string, Block> dictOrigin)
+        {
+            int x = location.X;
+            int y = location.Y - 1;
+            return GetSameKindBlock(dictOrigin, x, y);
         }
 
         public bool IsNullBlock()

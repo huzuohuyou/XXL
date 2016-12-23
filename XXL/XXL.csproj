@@ -48,7 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\XXLService.cs" />
+    <Compile Include="Core\Service\BaseXXLService.cs" />
+    <Compile Include="Core\Service\IService.cs" />
+    <Compile Include="Core\Service\DictSolutionService.cs" />
+    <Compile Include="Core\Service\TreeSolutionService.cs" />
+    <Compile Include="Core\XXLController.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -57,6 +61,7 @@
     </Compile>
     <Compile Include="Model\Block.cs" />
     <Compile Include="Model\GamePanel.cs" />
+    <Compile Include="Model\TreeSolution.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmMain.resx">

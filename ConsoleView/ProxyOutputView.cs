@@ -14,11 +14,11 @@ namespace ConsoleView
     class ProxyOutputView : BaseFormView
     {
         public ProxyOutputView() { }
-        XXLService service;
+        XXLController service;
         public void Do()
         {
             GamePanel.OriginDict.Clear();
-            service = new XXLService(this);
+            service = new XXLController(this);
             service.InitSolution();
             service.InitStepDict();
             Thread t = new Thread(service.DoWork);
