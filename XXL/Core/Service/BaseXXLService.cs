@@ -12,7 +12,7 @@ namespace XXL.Core.Service
 
         public Dictionary<string, Block> dictGroup = new Dictionary<string, Block>();
         public int sumScore = 0;
-        public GamePanel gamePanel;
+        public GamePanel gamePanel = GamePanel.GetInstance();
         public BaseXXLService(IViewCallback view) : base(view)
         {
         }
@@ -54,7 +54,7 @@ namespace XXL.Core.Service
                 }
                 SendMessage(row);
             }
-            gamePanel = new GamePanel(init);
+            gamePanel.OriginDict = init;// = new GamePanel(init);
         }
         //Dictionary<string, Block>()
         public Dictionary<string, Block> GetOriginDict()
@@ -70,7 +70,7 @@ namespace XXL.Core.Service
                     row += kind.ToString() + " ";
                 }
             }
-            gamePanel = new GamePanel(origin);
+            gamePanel.OriginDict = origin;
             return gamePanel.OriginDict;
         }
         public bool IsCleanPanel()

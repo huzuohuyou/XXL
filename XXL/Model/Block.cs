@@ -128,13 +128,13 @@ namespace XXL.Model
         public Block GoDown()
         {
             location.Y = location.Y - 1;
-            return panel.GetBlock(this.GetKey());
+            return new Block(this.kind,this.location.X,this.location.Y,panel);// panel.GetBlock(this.GetKey());
         }
 
         public Block GoLeft()
         {
             location.X = location.X - 1;
-            return panel.GetBlock(this.GetKey());
+            return new Block(this.kind, this.location.X, this.location.Y, panel); //panel.GetBlock(this.GetKey());
         }
 
         public Block GetUpBlock()

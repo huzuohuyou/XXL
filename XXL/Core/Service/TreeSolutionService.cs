@@ -79,18 +79,20 @@ namespace XXL.Core.Service
             {
                 List<Block> list = dictBlockList[key];
                 MLNode<Step> child = new MLNode<Step>(list.Count);
-                child.Data =new Step(key, list.Count > 1 ? list.Count * list.Count : 0,list[0].location.X,list[0].location.Y);
+                child.Data = new Step(key, list.Count > 1 ? list.Count * list.Count : 0, list[0].location.X, list[0].location.Y);
                 tree.Insert(child, parent, index);
                 index++;
                 if (list.Count == 1)
                 {//剩下一个节点无法删除
                     //parent.Childs = null;
                     continue;
-                } else
+                }
+                else
                 {//继续扩展
                     dictOrigin = Destory(dictOrigin, list);
                     dictOrigin = Refresh(dictOrigin);
                     Dictionary<string, List<Block>> refresh = InitGroupList(dictOrigin);
+                    SendMessage(string.Format("===================================（{0},{1}）", list[0].location.X, list[0].location.Y));
                     DrawGame(dictOrigin);
                     break;
                     //dictOriginBase.Add(,temp);
@@ -98,12 +100,10 @@ namespace XXL.Core.Service
 
                     //Thread.Sleep(1000);
                     //DrawGame(temp);
-                    //SendMessage(string.Format("===================================（{0},{1}）",list[0].location.X,list[0].location.Y));
+                    
                     //InitTree(temp, refresh, child);
                 }
-
             }
-            
         }
         List<int> result = new List<int>();
         int sum = 0;
@@ -148,10 +148,6 @@ namespace XXL.Core.Service
                     }
                 }
             }
-            //foreach (string item in dict.Keys)
-            //{
-            //    key += item;
-            //}
             return key;
         }
 
@@ -242,6 +238,7 @@ namespace XXL.Core.Service
             List<Block> list = GetGroupValues(dictGroup);
             origin = Destory(origin, GetGroupValues(dictGroup));
             origin = Refresh(origin);
+            SendMessage(string.Format("=================================({0},{1})",x,y));
             DrawGame(origin);
             dictGroup.Clear();
             Dictionary<string, List<Block>> childs = InitGroupList(origin);

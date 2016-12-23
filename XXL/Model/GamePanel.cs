@@ -9,11 +9,18 @@ namespace XXL.Model
 {
     public class GamePanel
     {
+        private static GamePanel gamePanel;
         private Dictionary<string, Block> originDict = new Dictionary<string, Block>();
-        public GamePanel(Dictionary<string, Block> OriginDict)
+
+        private GamePanel(Dictionary<string, Block> OriginDict)
         {
             this.OriginDict = OriginDict;
         }
+        private GamePanel()
+        {
+            //this.OriginDict = OriginDict;
+        }
+
 
         public Dictionary<string, Block> OriginDict
         {
@@ -22,13 +29,21 @@ namespace XXL.Model
                 return originDict;
             }
 
-            private set
+             set
             {
                 originDict = value;
             }
         }
 
-       
+        public static GamePanel GetInstance() {
+            if (gamePanel==null)
+            {
+                gamePanel = new GamePanel();
+            }
+            return gamePanel;
+        }
+
+
 
         public Block GetBlock(string key)
         {
