@@ -17,14 +17,24 @@ namespace XXL.Core.Service
         {
         }
 
-        int[,] demo = new int[10, 10] { { 0,1,0,1,1,0,1,0,3,1 }
-                                     , { 0,1,2,1,3,0,2,0,4,1 }
-                                     , { 0,2,0,1,3,2,2,4,1,1 }
-                                     , { 0,2,3,1,0,2,2,4,4,1 }
-                                     , { 4,2,3,1,0,2,2,4,4,1 }
-                                     , { 0,2,3,1,0,2,0,0,1,4 }
-                                     , { 1,2,1,1,0,1,0,2,4,4 }
-                                     , { 0,1,1,0,0,1,0,4,1,4 }
+        //int[,] demo = new int[10, 10] { { 0,1,0,1,1,0,1,0,3,1 }
+        //                             , { 0,1,2,1,3,0,2,0,4,1 }
+        //                             , { 0,2,0,1,3,2,2,4,1,1 }
+        //                             , { 0,2,3,1,0,2,2,4,4,1 }
+        //                             , { 4,2,3,1,0,2,2,4,4,1 }
+        //                             , { 0,2,3,1,0,2,0,0,1,4 }
+        //                             , { 1,2,1,1,0,1,0,2,4,4 }
+        //                             , { 0,1,1,0,0,1,0,4,1,4 }
+        //                             , { 0,1,3,1,4,3,3,4,0,4 }
+        //                             , { 4,1,0,1,0,4,3,3,0,4 } };
+        int[,] demo = new int[10, 10] { { 0,1,0,1,1,0,1,0,0,1 }
+                                     , { 0,1,2,1,3,0,2,0,0,1 }
+                                     , { 0,2,0,1,3,2,2,4,0,1 }
+                                     , { 0,2,3,1,0,2,2,4,0,1 }
+                                     , { 4,2,3,1,0,2,2,4,0,1 }
+                                     , { 0,2,3,1,0,2,0,0,0,4 }
+                                     , { 1,2,1,1,0,1,0,2,0,4 }
+                                     , { 0,1,1,0,0,1,0,4,0,4 }
                                      , { 0,1,3,1,4,3,3,4,0,4 }
                                      , { 4,1,0,1,0,4,3,3,0,4 } };
 
@@ -84,7 +94,7 @@ namespace XXL.Core.Service
             {
                 foreach (Block item in listGroup)
                 {
-                    if (origin.Keys.Contains(item.GetKey())&& origin[item.GetKey()]!=null)
+                    if (origin.Keys.Contains(item.GetKey()) && origin[item.GetKey()] != null)
                     {
                         //origin[item]=null;
                         origin[item.GetKey()] = origin[item.GetKey()].SetDisabled();
@@ -144,7 +154,7 @@ namespace XXL.Core.Service
             }
         }
 
-        public abstract void Expand(int i,int j);
+        public abstract void Expand(int i, int j);
 
         public void MessageGroup(Block block, string message)
         {
@@ -156,15 +166,15 @@ namespace XXL.Core.Service
 
         public void Refresh()
         {
-             RefreshRow();
+            RefreshRow();
             RefreshColumn();
-            
+
         }
 
-        public Dictionary<string, Block>  Refresh(Dictionary<string, Block> dictOrigin)
+        public Dictionary<string, Block> Refresh(Dictionary<string, Block> dictOrigin)
         {
-            dictOrigin= RefreshRow(dictOrigin);
-            dictOrigin= RefreshColumn(dictOrigin);
+            dictOrigin = RefreshRow(dictOrigin);
+            dictOrigin = RefreshColumn(dictOrigin);
             return dictOrigin;
         }
 
@@ -203,7 +213,7 @@ namespace XXL.Core.Service
                     }
 
                 }
-                while (GamePanel.GetInstance().IsClearColumn(origin,x))
+                while (GamePanel.GetInstance().IsClearColumn(origin, x))
                 {
                     x++;
                     if (x > 9)
@@ -240,25 +250,61 @@ namespace XXL.Core.Service
 
         public Dictionary<string, Block> RefreshColumn(Dictionary<string, Block> origin)
         {
-            return origin;
+            //return origin;
             //Dictionary<string, Block> origin = GamePanel.OriginDict;
-            //for (int x = 0; x < 10; x++)
-            //{
-            //    if (!origin.Keys.Contains(x.ToString() + "0"))
-            //    {
-            //        for (int i = x + 1; i < 10; i++)
-            //        {
-            //            for (int y = 0; y < 10; y++)
-            //            {
-            //                string key = i.ToString() + y.ToString();
-            //                if (origin.Keys.Contains(key))
-            //                {
-            //                    origin[key] = origin[key].GoLeft();
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
+            for (int x = 0; x < 10; x++)
+            {
+                if (origin[x.ToString() + "0"] == null)
+                {
+                    int count = MoveCount(origin);
+                    for (int i = x + 1; i < 10; i++)
+                    {
+                        for (int y = 0; y < 10; y++)
+                        {
+                            //string key = i.ToString() + y.ToString();
+                            if (origin[i.ToString() + y.ToString()] != null)
+                            {
+                                origin[(i - count) + y.ToString()] = origin[i.ToString() + y.ToString()];
+                                origin[i.ToString() + y.ToString()] = null;
+                            }
+                        }
+                    }
+                }
+            }
+            return origin;
+        }
+
+        public bool IsCleanRight(Dictionary<string, Block> origin, int x)
+        {
+            for (int i = x + 1; i < 10; i++)
+            {
+                for (int y = 0; y < 10; y++)
+                {
+                    if (null != origin[i.ToString() + y.ToString()])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public int MoveCount(Dictionary<string, Block> origin)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if (origin[i.ToString() + "0"] == null)
+                {
+                    for (int j = i; j < 10; j++)
+                    {
+                        if (origin[j.ToString() + "0"] != null)
+                        {
+                            return j - i;
+                        }
+                    }
+                }
+            }
+            return 0;
         }
 
         public bool HasNeighbor(int i, int j)

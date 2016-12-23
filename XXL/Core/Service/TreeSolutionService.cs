@@ -16,7 +16,7 @@ namespace XXL.Core.Service
         List<Block> listGroup = new List<Block>();
         static Dictionary<string, List<Block>> dictPanelGroup = new Dictionary<string, List<Block>>();
         TreeSolution solution;
-        MLTree<int> tree;// = new MLTree<int>();
+        MLTree<Step> tree;// = new MLTree<int>();
         public TreeSolutionService(IViewCallback view) : base(view)
         {
             solution = TreeSolution.GetInstance();
@@ -70,58 +70,62 @@ namespace XXL.Core.Service
             return temp;
         }
 
-        public void InitTree(Dictionary<string, Block> dictOrigin, Dictionary<string, List<Block>> dictBlockList, MLNode<int> parent)
+        public void InitTree(Dictionary<string, Block> dictOrigin, Dictionary<string, List<Block>> dictBlockList, MLNode<Step> parent)
         {
-
-            //Dictionary<string, List<Block>> dictBlockList = InitGroupList(dictOrigin);
             int index = 0;
             foreach (string key in dictBlockList.Keys)
             {
                 List<Block> list = dictBlockList[key];
-                MLNode<int> child = new MLNode<int>(list.Count);
-                child.Data = list.Count > 1 ? list.Count * list.Count : 0;
+                MLNode<Step> child = new MLNode<Step>(list.Count);
+                child.Data =new Step(key, list.Count > 1 ? list.Count * list.Count : 0,list[0].location.X,list[0].location.Y);
                 tree.Insert(child, parent, index);
+                index++;
                 if (list.Count == 1)
                 {//剩下一个节点无法删除
                     //parent.Childs = null;
                     continue;
                 } else
                 {//继续扩展
-                    //Thread.Sleep(1000);
+                   
                     dictOrigin = Destory(dictOrigin, list);
                     dictOrigin = Refresh(dictOrigin);
                     Dictionary<string, List<Block>> refresh = InitGroupList(dictOrigin);
-                    
-                    //DrawGame(dictOrigin);
+                    Thread.Sleep(1000);
+                    DrawGame(dictOrigin);
+                    SendMessage(string.Format("===================================（{0},{1}）",list[0].location.X,list[0].location.Y));
                     InitTree(dictOrigin, refresh, child);
                 }
-                index++;
+               
             }
         }
         List<int> result = new List<int>();
         int sum = 0;
-        public void CalScore(MLNode<int> parent)
+        public void CalScore(MLNode<Step> parent)
         {
-            foreach (MLNode<int> item in parent.Childs)
+            if (parent == null)
             {
-                
-                if (parent.Data == 0||parent.Childs[0]==null)
+                return;
+            }
+            string s = string.Format("pick:({0},{1}) key:{2}\n", parent.Data.Point.X, parent.Data.Point.Y, parent.Data.Key);
+            File.AppendAllText("D:\\result.txt", s);
+            sum += parent.Data.Score;
+            foreach (MLNode<Step> item in parent.Childs)
+            {
+                if (parent.Childs[0] == null)
                 {
                     //SendMessage(string.Format("计算完成:{0}....", sum));
-                    string s = string.Format("{0}:{1}\n", DateTime.Now.ToString("HH:mm:ss"), tree.Head.Data + parent.Data + sum);
-                    File.AppendAllText("D:\\result.txt", s);
-                    sum = 0;
+                    string finish = string.Format("{0}  >>>>>>>>>>>>>>>>>>>>>>>>>>>>score:{1}\n", DateTime.Now.ToString("HH:mm:ss"), sum);
+                    File.AppendAllText("D:\\result.txt", finish);
+                    //sum = 0;
                 }
                 else
                 {
-                    if (item != null)
-                    {
-                        CalScore(item);
-                    }
-                    sum += parent.Data;
+                    //if (item != null)
+                    //{
+                    CalScore(item);
+                    //}
                 }
             }
-
         }
 
         public string GetGroupKey(Dictionary<string, Block> dict)
@@ -225,15 +229,16 @@ namespace XXL.Core.Service
             Dictionary<string, Block> origin = GetOriginDict();
             Expand(origin, x, y);
             //Expand(origin, 1, 0);
+            string key = GetGroupKey(dictGroup);
             List<Block> list = GetGroupValues(dictGroup);
             origin = Destory(origin, GetGroupValues(dictGroup));
             origin = Refresh(origin);
             DrawGame(origin);
             dictGroup.Clear();
             Dictionary<string, List<Block>> childs = InitGroupList(origin);
-            tree = new MLTree<int>();
-            MLNode<int> head = new MLNode<int>(childs.Keys.Count);
-            head.Data = list.Count > 1 ? list.Count * list.Count : 0;
+            tree = new MLTree<Step>();
+            MLNode<Step> head = new MLNode<Step>(childs.Keys.Count);
+            head.Data =new Step(key, list.Count > 1 ? list.Count * list.Count : 0,list[0].location.X,list[0].location.Y);
 
             tree.Head = head;
             InitTree(origin, childs, tree.Head);
