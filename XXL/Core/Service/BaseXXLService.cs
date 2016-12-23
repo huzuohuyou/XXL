@@ -12,66 +12,66 @@ namespace XXL.Core.Service
 
         public Dictionary<string, Block> dictGroup = new Dictionary<string, Block>();
         public int sumScore = 0;
-        public GamePanel gamePanel = GamePanel.GetInstance();
+        public GamePanel gamePanel;
         public BaseXXLService(IViewCallback view) : base(view)
         {
         }
 
-        //int[,] demo = new int[10, 10] { { 0,1,0,1,1,0,1,0,3,1 }
-        //                             , { 0,1,2,1,3,0,2,0,4,1 }
-        //                             , { 0,2,0,1,3,2,2,4,1,1 }
-        //                             , { 0,2,3,1,0,2,2,4,4,1 }
-        //                             , { 4,2,3,1,0,2,2,4,4,1 }
-        //                             , { 0,2,3,1,0,2,0,0,1,4 }
-        //                             , { 1,2,1,1,0,1,0,2,4,4 }
-        //                             , { 0,1,1,0,0,1,0,4,1,4 }
-        //                             , { 0,1,3,1,4,3,3,4,0,4 }
-        //                             , { 4,1,0,1,0,4,3,3,0,4 } };
-        int[,] demo = new int[10, 10] { { 0,1,0,1,1,0,1,0,0,1 }
-                                     , { 0,1,2,1,3,0,2,0,0,1 }
-                                     , { 0,2,0,1,3,2,2,4,0,1 }
-                                     , { 0,2,3,1,0,2,2,4,0,1 }
-                                     , { 4,2,3,1,0,2,2,4,0,1 }
-                                     , { 0,2,3,1,0,2,0,0,0,4 }
-                                     , { 1,2,1,1,0,1,0,2,0,4 }
-                                     , { 0,1,1,0,0,1,0,4,0,4 }
+        int[,] demo = new int[10, 10] { { 0,1,0,1,1,0,1,0,3,1 }
+                                     , { 0,1,2,1,3,0,2,0,4,1 }
+                                     , { 0,2,0,1,3,2,2,4,1,1 }
+                                     , { 0,2,3,1,0,2,2,4,4,1 }
+                                     , { 4,2,3,1,0,2,2,4,4,1 }
+                                     , { 0,2,3,1,0,2,0,0,1,4 }
+                                     , { 1,2,1,1,0,1,0,2,4,4 }
+                                     , { 0,1,1,0,0,1,0,4,1,4 }
                                      , { 0,1,3,1,4,3,3,4,0,4 }
                                      , { 4,1,0,1,0,4,3,3,0,4 } };
+        //int[,] demo = new int[10, 10] { { 0,1,0,1,1,0,1,0,0,1 }
+        //                             , { 0,1,2,1,3,0,2,0,0,1 }
+        //                             , { 0,2,0,1,3,2,2,4,0,1 }
+        //                             , { 0,2,3,1,0,2,2,4,0,1 }
+        //                             , { 4,2,3,1,0,2,2,4,0,1 }
+        //                             , { 0,2,3,1,0,2,0,0,0,4 }
+        //                             , { 1,2,1,1,0,1,0,2,0,4 }
+        //                             , { 0,1,1,0,0,1,0,4,0,4 }
+        //                             , { 0,1,3,1,4,3,3,4,0,4 }
+        //                             , { 4,1,0,1,0,4,3,3,0,4 } };
 
         public void InitDict()
         {
+            Dictionary<string, Block> init = new Dictionary<string, Block>();
             SendMessage("game init ...");
-            Random r = new Random();
-            GamePanel.OriginDict.Clear();
+            //GamePanel.OriginDict.Clear();
             for (int y = 0; y < 10; y++)
             {
                 string row = string.Empty;
                 for (int x = 0; x < 10; x++)
                 {
                     int kind = demo[9 - y, x];// r.Next(0, 4);
-                    GamePanel.OriginDict.Add(x.ToString() + y.ToString(), new Block(kind, x, y));
+                    init.Add(x.ToString() + y.ToString(), new Block(kind, x, y,gamePanel));
                     row += kind.ToString() + " ";
                 }
                 SendMessage(row);
             }
+            gamePanel = new GamePanel(init);
         }
         //Dictionary<string, Block>()
         public Dictionary<string, Block> GetOriginDict()
         {
             Dictionary<string, Block> origin = new Dictionary<string, Block>();
-            GamePanel.OriginDict.Clear();
             for (int y = 0; y < 10; y++)
             {
                 string row = string.Empty;
                 for (int x = 0; x < 10; x++)
                 {
-                    int kind = demo[9 - y, x];// r.Next(0, 4);
-                    origin.Add(x.ToString() + y.ToString(), new Block(kind, x, y));
+                    int kind = demo[9 - y, x];
+                    origin.Add(x.ToString() + y.ToString(), new Block(kind, x, y, gamePanel));
                     row += kind.ToString() + " ";
                 }
-                //SendMessage(row);
             }
-            return origin;
+            gamePanel = new GamePanel(origin);
+            return gamePanel.OriginDict;
         }
         public bool IsCleanPanel()
         {
@@ -106,7 +106,7 @@ namespace XXL.Core.Service
 
         public int Destory(Dictionary<string, Block> dictGroup)
         {
-            Dictionary<string, Block> origin = GamePanel.OriginDict;
+            Dictionary<string, Block> origin = gamePanel.OriginDict;
             if (dictGroup.Keys.Count > 1)
             {
                 foreach (string item in dictGroup.Keys)
@@ -130,7 +130,7 @@ namespace XXL.Core.Service
 
         public void DrawGame()
         {
-            DrawGame(GamePanel.OriginDict);
+            DrawGame(gamePanel.OriginDict);
         }
 
         public void DrawGame(Dictionary<string, Block> origin)
@@ -174,13 +174,13 @@ namespace XXL.Core.Service
         public Dictionary<string, Block> Refresh(Dictionary<string, Block> dictOrigin)
         {
             dictOrigin = RefreshRow(dictOrigin);
-            dictOrigin = RefreshColumn(dictOrigin);
+            //dictOrigin = RefreshColumn(dictOrigin);
             return dictOrigin;
         }
 
         public void RefreshRow()
         {
-            RefreshRow(GamePanel.OriginDict);
+            RefreshRow(gamePanel.OriginDict);
         }
 
         public Dictionary<string, Block> RefreshRow(Dictionary<string, Block> origin)
@@ -201,7 +201,7 @@ namespace XXL.Core.Service
                                 up = up.GoDown();
                             }
                             origin[key] = up;
-                            origin[upkey] = new Block(-1, 0, 0);// origin[upkey].SetDisabled();
+                            origin[upkey] = new Block(-1, 0, 0,gamePanel);// origin[upkey].SetDisabled();
                         }
                     }
                     else
@@ -213,7 +213,7 @@ namespace XXL.Core.Service
                     }
 
                 }
-                while (GamePanel.GetInstance().IsClearColumn(origin, x))
+                while (gamePanel.IsClearColumn(origin, x))
                 {
                     x++;
                     if (x > 9)
@@ -227,7 +227,7 @@ namespace XXL.Core.Service
 
         public void RefreshColumn()
         {
-            RefreshColumn(GamePanel.OriginDict);
+            RefreshColumn(gamePanel.OriginDict);
             //Dictionary<string, Block> origin = GamePanel.OriginDict;
             //for (int x = 0; x < 10; x++)
             //{
@@ -252,20 +252,31 @@ namespace XXL.Core.Service
         {
             //return origin;
             //Dictionary<string, Block> origin = GamePanel.OriginDict;
-            for (int x = 0; x < 10; x++)
+            for (int x = 0; x < 9; x++)
             {
                 if (origin[x.ToString() + "0"] == null)
                 {
                     int count = MoveCount(origin);
+                    if (count==0)
+                    {
+                        continue;
+                    }
+                    //DrawGame(origin);
                     for (int i = x + 1; i < 10; i++)
                     {
                         for (int y = 0; y < 10; y++)
                         {
-                            //string key = i.ToString() + y.ToString();
-                            if (origin[i.ToString() + y.ToString()] != null)
+                            string keyRight = i.ToString() + y.ToString();
+                            string keyLeft = (i - count).ToString() + y.ToString();
+                            if (origin[keyRight] != null)
                             {
-                                origin[(i - count) + y.ToString()] = origin[i.ToString() + y.ToString()];
-                                origin[i.ToString() + y.ToString()] = null;
+                                Block right = origin[keyRight];
+                                if (right != null)
+                                {
+                                    right = right.GoLeft();
+                                }
+                                origin[keyLeft] = right;/// origin[i.ToString() + y.ToString()];
+                                origin[i.ToString() + y.ToString()] = null;// new Block(-1, 0, 0,gamePanel); ;
                             }
                         }
                     }
@@ -309,7 +320,7 @@ namespace XXL.Core.Service
 
         public bool HasNeighbor(int i, int j)
         {
-            Block start = GamePanel.GetInstance().GetBlock(i.ToString() + j.ToString());
+            Block start = gamePanel.GetBlock(i.ToString() + j.ToString());
             if (start != null)
             {
                 //MessageGroup(start, string.Format("set origin  ({0},{1}) kind:{2} in group", start.location.X.ToString(), start.location.Y.ToString(), start.kind));

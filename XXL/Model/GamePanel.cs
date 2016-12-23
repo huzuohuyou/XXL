@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,37 +9,26 @@ namespace XXL.Model
 {
     public class GamePanel
     {
-        public static Dictionary<string, Block>  OriginDict = new Dictionary<string, Block>();
-        
-        private GamePanel()
+        private Dictionary<string, Block> originDict = new Dictionary<string, Block>();
+        public GamePanel(Dictionary<string, Block> OriginDict)
         {
-           
+            this.OriginDict = OriginDict;
         }
-        private static GamePanel instance;
 
-        //public Dictionary<string, Block> OriginDict
-        //{
-        //    get
-        //    {
-        //        return originDict;
-        //    }
-
-        //    set
-        //    {
-        //        originDict = value;
-        //    }
-        //}
-
-
-
-        public static GamePanel GetInstance()
+        public Dictionary<string, Block> OriginDict
         {
-            if (instance == null)
+            get
             {
-                instance = new GamePanel();
+                return originDict;
             }
-            return instance;
+
+            private set
+            {
+                originDict = value;
+            }
         }
+
+       
 
         public Block GetBlock(string key)
         {

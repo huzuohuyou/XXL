@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="Core\Service\BaseXXLService.cs" />
     <Compile Include="Core\Service\IService.cs" />
-    <Compile Include="Core\Service\DictSolutionService.cs" />
     <Compile Include="Core\Service\TreeSolutionService.cs" />
     <Compile Include="Core\XXLController.cs" />
     <Compile Include="frmMain.cs">
@@ -60,6 +59,7 @@
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Block.cs" />
+    <Compile Include="Model\GameFrame.cs" />
     <Compile Include="Model\GamePanel.cs" />
     <Compile Include="Model\Step.cs" />
     <Compile Include="Model\TreeSolution.cs" />

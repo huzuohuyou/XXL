@@ -70,6 +70,8 @@ namespace XXL.Core.Service
             return temp;
         }
 
+        Dictionary<string, Dictionary<string, Block>> dictOriginBase = new Dictionary<string, Dictionary<string, Block>>();
+
         public void InitTree(Dictionary<string, Block> dictOrigin, Dictionary<string, List<Block>> dictBlockList, MLNode<Step> parent)
         {
             int index = 0;
@@ -86,17 +88,22 @@ namespace XXL.Core.Service
                     continue;
                 } else
                 {//继续扩展
-                   
                     dictOrigin = Destory(dictOrigin, list);
                     dictOrigin = Refresh(dictOrigin);
                     Dictionary<string, List<Block>> refresh = InitGroupList(dictOrigin);
-                    Thread.Sleep(1000);
                     DrawGame(dictOrigin);
-                    SendMessage(string.Format("===================================（{0},{1}）",list[0].location.X,list[0].location.Y));
-                    InitTree(dictOrigin, refresh, child);
+                    break;
+                    //dictOriginBase.Add(,temp);
+                    //InitTree(temp, refresh, child);
+
+                    //Thread.Sleep(1000);
+                    //DrawGame(temp);
+                    //SendMessage(string.Format("===================================（{0},{1}）",list[0].location.X,list[0].location.Y));
+                    //InitTree(temp, refresh, child);
                 }
-               
+
             }
+            
         }
         List<int> result = new List<int>();
         int sum = 0;
@@ -175,12 +182,13 @@ namespace XXL.Core.Service
 
         public override void Expand(int i, int j)
         {
-            Expand(GamePanel.OriginDict, i, j);
+            Expand(gamePanel.OriginDict, i, j);
         }
 
-        public void Expand(Dictionary<string, Block> dictOrigin,int i, int j)
+        public void Expand(Dictionary<string, Block> dictOrigin, int i, int j)
         {
-            Block start = dictOrigin[i.ToString() + j.ToString()];// GamePanel.GetInstance().GetBlock(dictOrigin, i.ToString() + j.ToString());
+            
+            Block start = dictOrigin[i.ToString() + j.ToString()];// : null;// GamePanel.GetInstance().GetBlock(dictOrigin, i.ToString() + j.ToString());
             if (start != null)
             {
                 if (!dictGroup.Keys.Contains(start.location.X.ToString() + start.location.Y.ToString()))
@@ -222,11 +230,12 @@ namespace XXL.Core.Service
                 return;
             }
             return;
+            
         }
 
         public void StartAt(int x, int y)
         {
-            Dictionary<string, Block> origin = GetOriginDict();
+            Dictionary<string, Block> origin = gamePanel.OriginDict;// GetOriginDict();
             Expand(origin, x, y);
             //Expand(origin, 1, 0);
             string key = GetGroupKey(dictGroup);
