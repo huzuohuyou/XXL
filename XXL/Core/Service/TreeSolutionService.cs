@@ -1,4 +1,5 @@
 ﻿using BIMT.Util;
+using BIMT.Util.Serialiaze;
 using BIMT.Util.Tree;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace XXL.Core.Service
         List<Block> listGroup = new List<Block>();
         static Dictionary<string, List<Block>> dictPanelGroup = new Dictionary<string, List<Block>>();
         TreeSolution solution;
-        MLTree<Step> tree;// = new MLTree<int>();
+        MLTree<StateUnit> tree;// = new MLTree<int>();
         public TreeSolutionService(IViewCallback view) : base(view)
         {
             solution = TreeSolution.GetInstance();
@@ -51,6 +52,10 @@ namespace XXL.Core.Service
                     {
                         continue;
                     }
+                    if (y==-1)
+                    {
+                        int sss = 0;
+                    }
                     Expand(origin, x, y);
                     string key = GetGroupKey(dictGroup);
                     List<Block> listGroup = GetGroupValues(dictGroup);
@@ -72,42 +77,45 @@ namespace XXL.Core.Service
 
         Dictionary<string, Dictionary<string, Block>> dictOriginBase = new Dictionary<string, Dictionary<string, Block>>();
 
-        public void InitTree(Dictionary<string, Block> dictOrigin, Dictionary<string, List<Block>> dictBlockList, MLNode<Step> parent)
+        public void InitTree(MLNode<StateUnit> parent)
         {
             int index = 0;
-            foreach (string key in dictBlockList.Keys)
+
+            foreach (string key in parent.Data.Groups.Keys)
             {
-                List<Block> list = dictBlockList[key];
-                MLNode<Step> child = new MLNode<Step>(list.Count);
-                child.Data = new Step(key, list.Count > 1 ? list.Count * list.Count : 0, list[0].location.X, list[0].location.Y);
+                List<Block> list = parent.Data.Groups[key];
+                MLNode<StateUnit> child = new MLNode<StateUnit>(list.Count);
                 tree.Insert(child, parent, index);
                 index++;
                 if (list.Count == 1)
-                {//剩下一个节点无法删除
-                    //parent.Childs = null;
+                {
+                    child.Data = new StateUnit(null, null, key, list.Count > 1 ? list.Count * list.Count : 0, list[0].location.X, list[0].location.Y);
                     continue;
                 }
                 else
                 {//继续扩展
+                    Dictionary<string, Block> dictOrigin = DeserialiazeClass.Deserialize<Dictionary<string, Block>>( SerialiazeClass.Serialiaze( new Dictionary<string, Block>(parent.Data.DictOrigin)));
                     dictOrigin = Destory(dictOrigin, list);
                     dictOrigin = Refresh(dictOrigin);
-                    Dictionary<string, List<Block>> refresh = InitGroupList(dictOrigin);
                     SendMessage(string.Format("===================================（{0},{1}）", list[0].location.X, list[0].location.Y));
-                    DrawGame(dictOrigin);
-                    break;
-                    //dictOriginBase.Add(,temp);
-                    //InitTree(temp, refresh, child);
 
-                    //Thread.Sleep(1000);
+                    Dictionary<string, List<Block>> childs = InitGroupList(dictOrigin);
+                    child.Data = new StateUnit(dictOrigin, childs, key, list.Count > 1 ? list.Count * list.Count : 0, list[0].location.X, list[0].location.Y);
+                    DrawGame(dictOrigin);
+                    //break;
+                    //dictOriginBase.Add(,temp);
+                    //InitTree(child);
+
+                    Thread.Sleep(1000);
                     //DrawGame(temp);
-                    
+
                     //InitTree(temp, refresh, child);
                 }
             }
         }
         List<int> result = new List<int>();
         int sum = 0;
-        public void CalScore(MLNode<Step> parent)
+        public void CalScore(MLNode<StateUnit> parent)
         {
             if (parent == null)
             {
@@ -116,7 +124,7 @@ namespace XXL.Core.Service
             string s = string.Format("pick:({0},{1}) key:{2}\n", parent.Data.Point.X, parent.Data.Point.Y, parent.Data.Key);
             File.AppendAllText("D:\\result.txt", s);
             sum += parent.Data.Score;
-            foreach (MLNode<Step> item in parent.Childs)
+            foreach (MLNode<StateUnit> item in parent.Childs)
             {
                 if (parent.Childs[0] == null)
                 {
@@ -184,16 +192,14 @@ namespace XXL.Core.Service
         public void Expand(Dictionary<string, Block> dictOrigin, int i, int j)
         {
             
-            Block start = dictOrigin[i.ToString() + j.ToString()];// : null;// GamePanel.GetInstance().GetBlock(dictOrigin, i.ToString() + j.ToString());
-            if (start != null)
+            Block start = dictOrigin.Keys.Contains(i.ToString() + j.ToString())? dictOrigin[i.ToString() + j.ToString()] : null;// GamePanel.GetInstance().GetBlock(dictOrigin, i.ToString() + j.ToString());
+            if ( start != null&&start.kind!=-1)
             {
                 if (!dictGroup.Keys.Contains(start.location.X.ToString() + start.location.Y.ToString()))
                 {
                     MessageGroup(start, string.Format("set origin  ({0},{1}) kind:{2} in group", start.location.X.ToString(), start.location.Y.ToString(), start.kind));
                     dictGroup.Add(start.location.X.ToString() + start.location.Y.ToString(), start);
                 }
-
-
                 Block left = start.GetSameGroupLeftBlock(dictOrigin);
                 Block up = start.GetSameGroupUpBlock(dictOrigin);
                 Block right = start.GetSameGroupRightBlock(dictOrigin);
@@ -242,12 +248,12 @@ namespace XXL.Core.Service
             DrawGame(origin);
             dictGroup.Clear();
             Dictionary<string, List<Block>> childs = InitGroupList(origin);
-            tree = new MLTree<Step>();
-            MLNode<Step> head = new MLNode<Step>(childs.Keys.Count);
-            head.Data =new Step(key, list.Count > 1 ? list.Count * list.Count : 0,list[0].location.X,list[0].location.Y);
+            tree = new MLTree<StateUnit>();
+            MLNode<StateUnit> head = new MLNode<StateUnit>(childs.Keys.Count);
+            head.Data =new StateUnit(origin, childs, key, list.Count > 1 ? list.Count * list.Count : 0,list[0].location.X,list[0].location.Y);
 
             tree.Head = head;
-            InitTree(origin, childs, tree.Head);
+            InitTree(tree.Head);
             CalScore(tree.Head);
             tree.Clear();
         }

@@ -6,10 +6,12 @@ using System.Text;
 
 namespace XXL.Model
 {
-    class Step
+    class StateUnit
     {
-        public Step(string key,int score, int x, int y)
+        public StateUnit(Dictionary<string, Block> dictOrigin, Dictionary<string, List<Block>> childs, string key,int score, int x, int y)
         {
+            this.dictOrigin = dictOrigin;
+            this.groups = childs;
             this.Key = key;
             this.Score = score;
             Point = new Point(x, y);
@@ -17,7 +19,8 @@ namespace XXL.Model
         string key;
         int score;
         Point point;
-
+        Dictionary<string, Block> dictOrigin;
+        Dictionary<string, List<Block>> groups;
         public int Score
         {
             get
@@ -54,6 +57,34 @@ namespace XXL.Model
             private set
             {
                 key = value;
+            }
+        }
+
+        public Dictionary<string, Block> DictOrigin
+        {
+            get
+            {
+                return dictOrigin;
+            }
+
+            private set
+            {
+                dictOrigin = value;
+            }
+        }
+
+       
+
+        public Dictionary<string, List<Block>> Groups
+        {
+            get
+            {
+                return groups;
+            }
+
+            private set
+            {
+                groups = value;
             }
         }
     }

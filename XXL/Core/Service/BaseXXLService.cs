@@ -141,7 +141,7 @@ namespace XXL.Core.Service
                 for (int x = 0; x < 10; x++)
                 {
                     string key = x.ToString() + y.ToString();
-                    if (origin.Keys.Contains(key) && origin[key] != null)
+                    if (origin.Keys.Contains(key) && origin[key] != null&& origin[x.ToString() + y.ToString()].kind!=-1)
                     {
                         row += origin[x.ToString() + y.ToString()].kind + " ";
                     }
@@ -174,7 +174,7 @@ namespace XXL.Core.Service
         public Dictionary<string, Block> Refresh(Dictionary<string, Block> dictOrigin)
         {
             dictOrigin = RefreshRow(dictOrigin);
-            //dictOrigin = RefreshColumn(dictOrigin);
+            dictOrigin = RefreshColumn(dictOrigin);
             return dictOrigin;
         }
 
