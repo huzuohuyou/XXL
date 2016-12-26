@@ -19,7 +19,7 @@ namespace XXL.Model
                 return originDict;
             }
 
-            private set
+            set
             {
                 originDict = value;
             }

@@ -1,0 +1,10 @@
+D:\DownLoad\XXL-back\XXL-back\XXL\bin\Release\XXL.exe.config
+D:\DownLoad\XXL-back\XXL-back\XXL\bin\Release\Aspose.Cells.dll
+D:\DownLoad\XXL-back\XXL-back\XXL\bin\Release\SmartUwrite.Util.dll
+D:\DownLoad\XXL-back\XXL-back\XXL\bin\Release\XXL.exe
+D:\DownLoad\XXL-back\XXL-back\XXL\bin\Release\XXL.pdb
+D:\DownLoad\XXL-back\XXL-back\XXL\obj\Release\XXL.frmMain.resources
+D:\DownLoad\XXL-back\XXL-back\XXL\obj\Release\XXL.Properties.Resources.resources
+D:\DownLoad\XXL-back\XXL-back\XXL\obj\Release\XXL.csproj.GenerateResource.Cache
+D:\DownLoad\XXL-back\XXL-back\XXL\obj\Release\XXL.exe
+D:\DownLoad\XXL-back\XXL-back\XXL\obj\Release\XXL.pdb

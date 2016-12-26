@@ -19,3 +19,6 @@ D:\GitHub\XXL\ConsoleView\bin\Debug\DotRas.xml
 D:\GitHub\XXL\ConsoleView\obj\Debug\ConsoleView.csprojResolveAssemblyReference.cache
 D:\GitHub\XXL\ConsoleView\obj\Debug\ConsoleView.exe
 D:\GitHub\XXL\ConsoleView\obj\Debug\ConsoleView.pdb
+D:\DownLoad\XXL-back\XXL-back\ConsoleView\obj\Debug\ConsoleView.csprojResolveAssemblyReference.cache
+D:\DownLoad\XXL-back\XXL-back\ConsoleView\obj\Debug\ConsoleView.exe
+D:\DownLoad\XXL-back\XXL-back\ConsoleView\obj\Debug\ConsoleView.pdb

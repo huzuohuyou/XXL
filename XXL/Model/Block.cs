@@ -12,10 +12,32 @@ namespace XXL.Model
         GamePanel panel;
         public int kind;
         public Point location;
+
+        public GamePanel Panel
+        {
+            get
+            {
+                return panel;
+            }
+
+            set
+            {
+                panel = value;
+            }
+        }
+
+
+        public Block GetSameBlock()
+        {
+            //return new Block(block.kind, block.location.X, block.location.Y, block.Panel);
+
+            return new Block(this.kind, this.location.X, this.location.Y, this.panel);
+        }
+
         //public static readonly Block NullBlock = new Block(-1, -1, -1);
         public Block(int kind, int x, int y,GamePanel panel)
         {
-            this.panel = panel;
+            this.Panel = panel;
             this.kind = kind;
             //if (x < 0 || x > 9 || y < 0 || y > 9)
             //{
@@ -43,7 +65,7 @@ namespace XXL.Model
         {
             int x = location.X;
             int y = location.Y;
-            Block block = panel.GetBlock(x.ToString() + y.ToString());
+            Block block = Panel.GetBlock(x.ToString() + y.ToString());
             if (block != null && block.kind == this.kind)
             {
                 return block;
@@ -53,7 +75,7 @@ namespace XXL.Model
 
         public Block GetSameKindBlock(int x, int y)
         {
-            return GetSameKindBlock(panel.OriginDict, x, y);
+            return GetSameKindBlock(Panel.OriginDict, x, y);
         }
 
      
@@ -128,25 +150,25 @@ namespace XXL.Model
         public Block GoDown()
         {
             location.Y = location.Y - 1;
-            return new Block(this.kind,this.location.X,this.location.Y,panel);// panel.GetBlock(this.GetKey());
+            return new Block(this.kind,this.location.X,this.location.Y,Panel);// panel.GetBlock(this.GetKey());
         }
 
         public Block GoLeft()
         {
             location.X = location.X - 1;
-            return new Block(this.kind, this.location.X, this.location.Y, panel); //panel.GetBlock(this.GetKey());
+            return new Block(this.kind, this.location.X, this.location.Y, Panel); //panel.GetBlock(this.GetKey());
         }
 
         public Block GetUpBlock()
         {
-            return panel.GetBlock(location.X.ToString() + (location.Y + 1).ToString());
+            return Panel.GetBlock(location.X.ToString() + (location.Y + 1).ToString());
         }
 
         public Block GetRightBlock()
         {
             int x = location.X + 1;
             int y = location.Y ;
-            return panel.GetBlock(x.ToString() + y.ToString());
+            return Panel.GetBlock(x.ToString() + y.ToString());
         }
 
         public string GetKey()

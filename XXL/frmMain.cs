@@ -27,6 +27,7 @@ namespace XXL
         public override void SetView(int count, string value)
         {
             richTextBox1.Text = string.Format("{0}: {1} \n", DateTime.Now.ToString("HH:mm:ss"), value) + richTextBox1.Text;
+            //richTextBox1.Font = new Font(new FontFamily("Courier New"),10.5f);
         }
 
         private void button1_Click(object sender, EventArgs e)

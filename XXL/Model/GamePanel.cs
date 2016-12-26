@@ -68,10 +68,13 @@ namespace XXL.Model
         {
             for (int y = 0; y < 10; y++)
             {
-                string key = x.ToString() + y.ToString();
-                if (OriginDict.Keys.Contains(key))
+                StringBuilder sb = new StringBuilder(4);
+                sb.Append(x);
+                sb.Append(0);
+                //string key = x.ToString() + y.ToString();
+                if (OriginDict.Keys.Contains(sb.ToString()))
                 {
-                    if (OriginDict[key] != null && OriginDict[key].IsNullBlock())
+                    if (OriginDict[sb.ToString()] != null && OriginDict[sb.ToString()].IsNullBlock())
                     {
                         return false;
                     }
