@@ -70,7 +70,7 @@ namespace XXL.Model
             {
                 StringBuilder sb = new StringBuilder(4);
                 sb.Append(x);
-                sb.Append(0);
+                sb.Append(y);
                 //string key = x.ToString() + y.ToString();
                 if (OriginDict.Keys.Contains(sb.ToString()))
                 {

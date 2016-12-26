@@ -100,6 +100,8 @@ namespace XXL.Core.Service
         {
             if (Cleared(parent))
             {
+                //SendMessage(string.Format("===============ONE PATH====================）"));
+                //SendMessageWithProcess(-1, string.Empty);
                 return;
             }
             int index = 0;
@@ -127,7 +129,7 @@ namespace XXL.Core.Service
                 cloned = Destory(cloned, list);
                 cloned = Refresh(cloned);
                 //SendMessage(string.Format("===================================（{0},{1}）", list[0].location.X, list[0].location.Y));
-                Dictionary<string, List<Block>> childs = parent.Data.Groups;// InitGroupList(cloned);
+                Dictionary<string, List<Block>> childs =  InitGroupList(cloned);
                 child.Data = new StateUnit(
                     cloned,
                     childs,
@@ -141,7 +143,7 @@ namespace XXL.Core.Service
                 //break;
                 //dictOriginBase.Add(,temp);
                 InitTree(child);
-                //Thread.Sleep(500);
+                Thread.Sleep(500);
                 //DrawGame(temp);
                 //InitTree(temp, refresh, child);
                 //}
@@ -317,7 +319,7 @@ namespace XXL.Core.Service
             tree = new MLTree<StateUnit>();
             MLNode<StateUnit> head = new MLNode<StateUnit>(childs.Keys.Count);
             List<string> root = new List<string>();
-            root.Add(key);
+            //root.Add(key);
 
             head.Data =new StateUnit(
                 origin, 

@@ -1,5 +1,4 @@
 D:\GitHub\XXL\XXL\bin\Debug\XXL.exe.config
-D:\GitHub\XXL\XXL\obj\Debug\XXL.csprojResolveAssemblyReference.cache
 D:\GitHub\XXL\XXL\obj\Debug\XXL.frmMain.resources
 D:\GitHub\XXL\XXL\obj\Debug\XXL.Properties.Resources.resources
 D:\GitHub\XXL\XXL\obj\Debug\XXL.csproj.GenerateResource.Cache
@@ -7,11 +6,6 @@ D:\GitHub\XXL\XXL\bin\Debug\Aspose.Cells.dll
 D:\GitHub\XXL\XXL\bin\Debug\XXL.exe
 D:\GitHub\XXL\XXL\bin\Debug\XXL.pdb
 D:\GitHub\XXL\XXL\bin\Debug\SmartUwrite.Util.dll
-D:\GitHub\XXL\XXL\bin\Debug\ICSharpCode.SharpZipLib.dll
-D:\GitHub\XXL\XXL\bin\Debug\Aliyun.OpenServices.dll
-D:\GitHub\XXL\XXL\bin\Debug\Newtonsoft.Json.dll
-D:\GitHub\XXL\XXL\bin\Debug\DotRas.dll
-D:\GitHub\XXL\XXL\bin\Debug\DotRas.xml
 D:\GitHub\XXL\XXL\obj\Debug\XXL.exe
 D:\GitHub\XXL\XXL\obj\Debug\XXL.pdb
 D:\DownLoad\XXL-back\XXL-back\XXL\bin\Debug\Aspose.Cells.dll

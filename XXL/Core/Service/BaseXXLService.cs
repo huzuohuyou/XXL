@@ -26,7 +26,7 @@ namespace XXL.Core.Service
                                      , { 1,2,1,1,0,1,0,2,4,4 }
                                      , { 0,1,1,0,0,1,0,4,1,4 }
                                      , { 0,1,3,1,4,3,3,4,0,4 }
-                                     , { 4,1,0,1,0,4,3,3,0,4 } };
+                                     , { 4,1,1,1,0,4,3,3,0,4 } };
         //int[,] demo = new int[10, 10] { { 0,1,0,1,1,0,1,0,0,1 }
         //                             , { 0,1,2,1,3,0,2,0,0,1 }
         //                             , { 0,2,0,1,3,2,2,4,0,1 }
@@ -248,14 +248,37 @@ namespace XXL.Core.Service
             //}
         }
 
+        public bool NeedRefreshColumn(Dictionary<string, Block> origin, int x)
+        {
+            for (int i = x; i < 10; i++)
+            {
+                StringBuilder sbKey = new StringBuilder(4);
+                sbKey.Append(i);
+                sbKey.Append(0);
+                if (origin[sbKey.ToString()] != null)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public Dictionary<string, Block> RefreshColumn(Dictionary<string, Block> origin)
         {
             //return origin;
             //Dictionary<string, Block> origin = GamePanel.OriginDict;
             for (int x = 0; x < 9; x++)
             {
-                if (origin[x.ToString() + "0"] == null)
+               
+                StringBuilder sbKey = new StringBuilder(4);
+                sbKey.Append(x);
+                sbKey.Append(0);
+                if (origin[sbKey.ToString()] == null)
                 {
+                    if (!NeedRefreshColumn(origin,x))
+                    {
+                        return origin;
+                    }
                     int count = MoveCount(origin);
                     if (count==0)
                     {
@@ -266,8 +289,8 @@ namespace XXL.Core.Service
                     {
                         for (int y = 0; y < 10; y++)
                         {
-                            string keyRight = i.ToString() + y.ToString();
-                            string keyLeft = (i - count).ToString() + y.ToString();
+                            string keyRight = new StringBuilder(i.ToString(), 4).Append(y).ToString(); // i.ToString() + y.ToString();
+                            string keyLeft = new StringBuilder((i - count).ToString(), 4).Append(y).ToString();// (i - count).ToString() + y.ToString();
                             if (origin[keyRight] != null)
                             {
                                 Block right = origin[keyRight];
@@ -276,7 +299,7 @@ namespace XXL.Core.Service
                                     right = right.GoLeft();
                                 }
                                 origin[keyLeft] = right;/// origin[i.ToString() + y.ToString()];
-                                origin[i.ToString() + y.ToString()] = null;// new Block(-1, 0, 0,gamePanel); ;
+                                origin[keyRight] = null;// new Block(-1, 0, 0,gamePanel); ;
                             }
                         }
                     }
@@ -304,11 +327,17 @@ namespace XXL.Core.Service
         {
             for (int i = 0; i < 10; i++)
             {
-                if (origin[i.ToString() + "0"] == null)
+                StringBuilder sbnull = new StringBuilder(4);
+                sbnull.Append(i);
+                sbnull.Append(0);
+                if (origin[sbnull.ToString()] == null)
                 {
                     for (int j = i; j < 10; j++)
                     {
-                        if (origin[j.ToString() + "0"] != null)
+                        StringBuilder sbnunull = new StringBuilder(4);
+                        sbnunull.Append(j);
+                        sbnunull.Append(0);
+                        if (origin[sbnunull.ToString()] != null)
                         {
                             return j - i;
                         }

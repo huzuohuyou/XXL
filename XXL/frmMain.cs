@@ -12,6 +12,7 @@ using XXL.Core;
 using System.Threading;
 using XXL.Model;
 using XXL.Core.Service;
+using System.IO;
 
 namespace XXL
 {
@@ -28,6 +29,10 @@ namespace XXL
         {
             richTextBox1.Text = string.Format("{0}: {1} \n", DateTime.Now.ToString("HH:mm:ss"), value) + richTextBox1.Text;
             //richTextBox1.Font = new Font(new FontFamily("Courier New"),10.5f);
+            if (count==-1)
+            {
+                File.WriteAllText("D://log.txt",richTextBox1.Text);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)

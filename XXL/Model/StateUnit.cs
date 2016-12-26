@@ -23,6 +23,7 @@ namespace XXL.Model
             this.Key = key;
             this.Score = score+parentScore;
             Point = new Point(x, y);
+            ListLog.Add(key);
             ListLog.AddRange(parentList);
         }
 

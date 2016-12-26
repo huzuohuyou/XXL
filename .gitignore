@@ -51,3 +51,5 @@ XXL/bin/Debug/XXL.exe
 .vs/XXL/v14/.suo
 ConsoleView/obj/Debug/build.force
 *.suo
+*.exe
+*.pdb
